@@ -140,13 +140,18 @@
             animation: fade-in 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         }
 
+        /* Prevent system gestures interference inside the grid on mobile */
+        .prevent-mobile-refresh {
+            overscroll-behavior-y: contain;
+        }
+
         /* Hide layout jumping during loading */
         [v-cloak] {
             display: none;
         }
     </style>
 </head>
-<body class="bg-brand-950 text-slate-100 font-sans h-full overflow-hidden select-none flex flex-col justify-between">
+<body class="bg-brand-950 text-slate-100 font-sans h-full overflow-hidden select-none flex flex-col justify-between prevent-mobile-refresh">
 
     <!-- Splash/Welcome Screen -->
     <div id="welcome-screen" class="fixed inset-0 bg-brand-950 z-50 flex flex-col justify-between p-6 overflow-y-auto">
@@ -324,7 +329,7 @@
                 </svg>
 
                 <!-- Grid columns (Dynamic column mapping based on grid sizes) -->
-                <div id="grid-container" class="grid gap-1 h-full w-full select-none">
+                <div id="grid-container" class="grid gap-1 h-full w-full select-none touch-none">
                     <!-- Cells injected by JavaScript -->
                 </div>
 
@@ -394,12 +399,12 @@
             "THE", "AND", "ARE", "FOR", "NOT", "BUT", "YOU", "RUN", "FLY", "SEE", "DOG", "CAT", "BOX", "SUN", "BOY", "TOY", "RED", "GET", "OUT", "HOW", "HOT", "NEW", "OLD", "BIG", "RAW", "TEN", "OAK", "MAP", "CAR", "BUS", "WIN", "NET", "COB", "CUP", "PIN", "PEN", "HAT", "BAG", "DIG", "FIT", "HIT", "KEY", "LEG", "LIP", "MAD", "MIX", "NUT", "PET", "SAD", "TAG", "VAN", "WET", "ZIP", "YES", "OWN", "AIR", "ICE", "WAR", "EAR", "EYE", "JOY", "CRY", "TRY", "LOW", "ROW", "SEA", "WAY", "DAY", "END", "NOW", "ONE", "TWO", "USE", "WHO", "WHY", "ASK", "BAD", "CUT", "DRY", "EAT", "FAR", "FIX", "FUN", "ILL", "JOB", "LAY", "LIE", "MAN", "PAY", "SIT", "TAX", "TON", "YET", "ACT", "ADD", "AGE", "AGO", "AIM", "ALE", "ALL", "APE", "ARM", "ART", "ASH", "AWE", "AXE", "BAN", "BAR", "BAT", "BED", "BEE", "BEG", "BET", "BIN", "BIT", "BOW", "BUD", "BUG", "BUM", "BYE", "CAB", "CAN", "CAP", "COW", "COY", "CUB", "CUE", "DAM", "DEN", "DEW", "DID", "DIM", "DIN", "DIP", "DOE", "DON", "DOT", "DUE", "DUG", "DYE", "EEL", "EGO", "ELF", "ELK", "ELM", "ERA", "ERR", "EVE", "FAN", "FAT", "FED", "FEW", "FIB", "FIG", "FIN", "FIR", "FOE", "FOG", "FOX", "FRY", "GAP", "GAS", "GEM", "GIG", "GIN", "GOD", "GUM", "GUT", "GUY", "GYM", "HAM", "HAY", "HEM", "HEN", "HER", "HEY", "HIM", "HIP", "HIS", "HOG", "HOP", "HUG", "HUM", "HUT", "INK", "INN", "ION", "ITS", "IVY", "JAM", "JAR", "JAW", "JET", "JIG", "JOG", "JOT", "KEG", "KEN", "KID", "KIN", "KIT", "LAB", "LAD", "LAG", "LAP", "LAW", "LEA", "LED", "LET", "LID", "LOB", "LOG", "LOP", "LOT", "LUG", "LUX", "LYE", "MAT", "MAY", "MED", "MEN", "MET", "MID", "MOB", "MOD", "MOP", "MOW", "MUD", "MUG", "MUM", "NAB", "NAG", "NAY", "NEO", "NIB", "NIL", "NIP", "NOD", "NON", "NOR", "NUN", "NUT", "OAF", "OAR", "OAT", "ODD", "ODE", "OFF", "OFT", "OIL", "OPT", "ORB", "ORE", "OUR", "OUT", "OVA", "OWE", "OWL", "OWN", "PAD", "PAL", "PAN", "PAR", "PAT", "PAW", "PAY", "PEA", "PEG", "PEP", "PER", "PET", "PEW", "PIG", "PIN", "PIP", "PIT", "PLY", "POD", "POP", "POT", "PRO", "PRY", "PUB", "PUG", "PUN", "PUP", "PUT", "RAD", "RAG", "RAM", "RAN", "RAP", "RAT", "RAY", "REF", "REG", "REP", "RIB", "RID", "RIG", "RIM", "RIP", "ROB", "ROD", "ROE", "ROT", "ROW", "RUB", "RUE", "RUG", "RUM", "RUT", "RYE", "SAC", "SAG", "SAP", "SAT", "SAW", "SAY", "SEC", "SEE", "SEN", "SET", "SEW", "SEX", "SHE", "SHY", "SIB", "SIN", "SIP", "SIR", "SIS", "SIT", "SIX", "SKI", "SKY", "SLY", "SOB", "SOD", "SOL", "SON", "SOP", "SOW", "SOY", "SPA", "SPY", "SUB", "SUE", "SUM", "SUP", "TAB", "TAD", "TAG", "TAN", "TAP", "TAR", "TAT", "TAX", "TEA", "TED", "TEE", "TEN", "THE", "THO", "THY", "TIC", "TIE", "TIN", "TIP", "TIT", "TOD", "TOE", "TOG", "TOM", "TON", "TOO", "TOP", "TOT", "TOW", "TOY", "TRY", "TUB", "TUG", "TUN", "TUT", "TUX", "TWO", "UFO", "UGH", "UMP", "URN", "USE", "VAN", "VAT", "VET", "VEX", "VIA", "VOW", "WAD", "WAG", "WAN", "WAR", "WAS", "WET", "WHO", "WHY", "WIG", "WIN", "WIT", "WOE", "WOK", "WON", "WOO", "WOW", "WRY", "YAK", "YAM", "YAP", "YAW", "YEA", "YEN", "YEP", "YES", "YET", "YEW", "YIP", "YOB", "YOU", "YOW", "YUM", "YUP", "ZAG", "ZAP", "ZED", "ZEE", "ZEN", "ZIG", "ZIP", "ZIT", "ZOO",
             // 4-Letter Words
             "ABLE", "ACID", "ACRE", "ACTS", "AGED", "ALGE", "ALSO", "AMEN", "ANEW", "APEX", "APES", "ARCH", "AREA", "ARMS", "ARMY", "ARTS", "ATOM", "AUNT", "AURA", "AUTO",
-            "BABY", "BACK", "BAKE", "BALL", "BAND", "BANK", "BARE", "BARK", "BARN", "BASE", "BASH", "BATH", "BEAK", "BEAM", "BEAN", "BEAR", "BEAT", "BEEF", "BEER", "BELL", "BELT", "BEND", "BEST", "BETA", "BIAS", "BIDS", "BIKE", "BILL", "BIND", "BIRD", "BITE", "BLOW", "BLUE", "BOAT", "BODY", "BOIL", "BOLD", "BOND", "BONE", "BOOK", "BOOM", "BOOT", "BOSS", "BOTH", "BOWL", "BULB", "BULL", "BUMP", "BURN", "BUSH", "BUSY", "BUZZ",
+            "BABY", "BACK", "BAKE", "BALL", "BAND", "BANK", "BARE", "BARK", "BARN", "BASE", "BASH", "BATH", "BEAK", "BEAM", "BEAN", "BEAR", "BEAT", "BEEF", "BEER", "BELL", "BELT", "BEND", "BEST", "BETA", "BIAS", "BIDS", "BIKE", "BILL", "BIND", "BIRD", "BITE", "BLOW", "BLUE", "BOAT", "BODY", "BODY", "BOIL", "BOLD", "BOND", "BONE", "BOOK", "BOOM", "BOOT", "BOSS", "BOTH", "BOWL", "BULB", "BULL", "BUMP", "BURN", "BUSH", "BUSY", "BUZZ",
             "CAGE", "CAKE", "CALF", "CALL", "CALM", "CAMP", "CANE", "CANS", "CAPE", "CARD", "CARE", "CASE", "CASH", "CAST", "CAVE", "CELL", "CENT", "CHEF", "CHIN", "CHIP", "CHOP", "CITY", "CLAN", "CLAW", "CLAY", "CLIP", "CLUB", "COAL", "COAT", "CODE", "COIL", "COIN", "COLD", "CONE", "COOK", "COOL", "COPE", "COPY", "CORD", "CORE", "CORK", "CORN", "COST", "COUP", "COVE", "COW", "CRAB", "CREW", "CROP", "CROW", "CUBE", "CULT", "CUP", "CURE", "CURL", "CUTE",
             "DARE", "DARK", "DART", "DASH", "DATA", "DATE", "DAWN", "DAYS", "DEAD", "DEAF", "DEAL", "DEAR", "DEBT", "DECK", "DEED", "DEEM", "DEER", "DEFI", "DEFY", "DELI", "DENT", "DESK", "DIAL", "DIET", "DIGS", "DIME", "DINE", "DINT", "DIRT", "DISC", "DISH", "DISK", "DIVE", "DOCK", "DOES", "DOGS", "DOLL", "DOME", "DONE", "DOOR", "DOSE", "DOWN", "DRAB", "DRAG", "DRAW", "DREW", "DROP", "DRUM", "DUCK", "DUCT", "DUEL", "DUET", "DUKE", "DULL", "DUNE", "DUST", "DUTY",
             "EACH", "EARN", "EARS", "EASE", "EAST", "EASY", "EATS", "ECHO", "EDGE", "EDIT", "EELS", "EGGS", "ELSE", "EMIT", "ENDS", "ENVY", "EPIC", "ETCH", "EVEN", "EVER", "EVIL", "EXAM", "EXIT", "EYES",
             "FACE", "FACT", "FADE", "FAIL", "FAIR", "FAKE", "FALL", "FAME", "FANG", "FANS", "FARE", "FARM", "FAST", "FATE", "FEAR", "FEAT", "FEED", "FEEL", "FEET", "FELL", "FEST", "FIBER", "FIFE", "FIGS", "FILE", "FILL", "FILM", "FIND", "FINE", "FINS", "FIRE", "FIRM", "FISH", "FIST", "FITS", "FIVE", "FLAG", "FLAK", "FLAM", "FLAP", "FLAT", "FLAW", "FLED", "FLEE", "FLEW", "FLEX", "FLIP", "FLOW", "FLUE", "FLUX", "FLYER", "FOAM", "FOIL", "FOLD", "FOLK", "FONT", "FOOD", "FOOL", "FOOT", "FORD", "FORE", "FORK", "FORM", "FORT", "FOUL", "FOUR", "FOWL", "FREE", "FROG", "FROM", "FUEL", "FULL", "FUME", "FUND", "FURY", "FUSE", "FUZZ",
-            "GAGE", "GAIN", "GALE", "GAME", "GANG", "GATE", "GAVE", "GAZE", "GEAR", "GELD", "GEMS", "GENT", "GERM", "GIFT", "GILL", "GIRD", "GIRL", "GLAD", "GLEE", "GLEN", "GLOW", "GLUE", "GOAL", "GOAT", "GOLD", "GOLF", "GONE", "GOOD", "GORE", "GOWN", "GRAB", "GRAY", "GREW", "GRID", "GRIN", "GRIP", "GRIT", "GROW", "GULF", "GULL", "GUMS", "GURU", "GUSH", "GUST", "GYRO",
+            "GAGE", "GAIN", "GALE", "GAME", "GANG", "GATE", "GAVE", "GAZE", "GEAR", "GELD", "GEMS", "GENT", "GERM", "GIFT", "GILL", "GIRD", "GIRL", "GLAD", "GLEE", "GLEN", "GLOW", "GLUE", "GOAL", "GOAT", "GOLD", "GOLF", "GONE", "GOOD", "GORE", "GOWN", "GRAB", "GRAY", "GREW", "GRID", "GRIN", "GRIP", "GRIT", "GROW", "GULF", "GULL", "GUMS", "GURU", "GUSH", "GUSH", "GYRO",
             "HAIR", "HALF", "HALL", "HALT", "HAND", "HANG", "HARE", "HARK", "HART", "HASH", "HATE", "HAWK", "HAZE", "HEAD", "HEAL", "HEAR", "HEAT", "HECK", "HEEL", "HEIR", "HELD", "HELM", "HELP", "HEMP", "HERD", "HERE", "HERO", "HERS", "HIDE", "HIGH", "HIKE", "HILL", "HILT", "HIND", "HINT", "HIRE", "HITS", "HIVE", "HOAX", "HOBO", "HOLD", "HOLE", "HOME", "HONE", "HOOF", "HOOK", "HOOP", "HOPE", "HORN", "HOSE", "HOST", "HOUR", "HOWL", "HUGE", "HULL", "HUNG", "HUNT", "HURT", "HUSH", "HYMN",
             "ICON", "IDEA", "IDLE", "IDOL", "INCH", "INFO", "INKS", "INTO", "IONS", "IRIS", "IRON", "ISLE", "ITCH", "ITEM", "KEYS", "KICK", "KILN", "KILO", "KIND", "KING", "KISS", "KITE", "KIVI", "KNEE", "KNEW", "KNIT", "KNOT", "KNOW",
             "LACE", "LACK", "LADY", "LAID", "LAKE", "LAMB", "LAMP", "LAND", "LANE", "LARK", "LASH", "LAST", "LATE", "LAVA", "LAWN", "LAWS", "LAYA", "LAZY", "LEAD", "LEAF", "LEAK", "LEAN", "LEAP", "LEST", "LEFT", "LEGO", "LENS", "LENT", "LESS", "LEST", "LEVY", "LIAR", "LICE", "LICK", "LIDS", "LIFE", "LIFT", "LIKE", "LIMB", "LIME", "LIMP", "LINE", "LINK", "LINT", "LION", "LIPS", "LISP", "LIST", "LIVE", "LOAD", "LOAF", "LOAM", "LOAN", "LOBE", "LOCK", "LOFT", "LOGS", "LONG", "LOOK", "LOOM", "LOOP", "LOOT", "LORD", "LOSE", "LOSS", "LOST", "LOUD", "LOVE", "LOWS", "LUBE", "LUCK", "LUMP", "LUNG", "LUSH", "LUTE", "LUXURY",
@@ -826,7 +831,7 @@
             const size = boardState.gridSize;
             
             // Reapply grid layout dimensions dynamically
-            container.className = `grid grid-cols-${size} grid-rows-${size} gap-1 h-full w-full select-none`;
+            container.className = `grid grid-cols-${size} grid-rows-${size} gap-1 h-full w-full select-none touch-none`;
             container.innerHTML = "";
             
             for (let i = 0; i < size * size; i++) {
@@ -895,18 +900,37 @@
             addCellToPath(idx);
         }
 
+        // MATHEMATICALLY BULLETPROOF TOUCH-DRAG SYSTEM FOR MOBILE
         function handleTouchMove(e) {
             if (!isDragging) return;
+            
+            // Block mobile pull-down-refresh or scrolling behaviors while selecting letters
+            if (e.cancelable) e.preventDefault();
+
             const touch = e.touches[0];
-            const targetEl = document.elementFromPoint(touch.clientX, touch.clientY);
-            if (targetEl) {
-                const cell = targetEl.closest('.grid-cell');
-                if (cell) {
-                    const idx = parseInt(cell.getAttribute('data-index'));
-                    if (!isNaN(idx)) {
-                        addCellToPath(idx);
-                    }
-                }
+            const container = document.getElementById('grid-container');
+            if (!container) return;
+
+            // Retrieve absolute screen container dimensions
+            const rect = container.getBoundingClientRect();
+            
+            // Calculate finger's exact coordinates relative to grid container bounds
+            const relativeX = touch.clientX - rect.left;
+            const relativeY = touch.clientY - rect.top;
+
+            const size = boardState.gridSize;
+            
+            // Map relative coordinate vectors to row and column sizes
+            const colWidth = rect.width / size;
+            const rowHeight = rect.height / size;
+            
+            const col = Math.floor(relativeX / colWidth);
+            const row = Math.floor(relativeY / rowHeight);
+
+            // Boundary validation check
+            if (col >= 0 && col < size && row >= 0 && row < size) {
+                const idx = row * size + col;
+                addCellToPath(idx);
             }
         }
 
