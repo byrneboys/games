@@ -283,10 +283,12 @@
                 </div>
             </div>
 
-            <!-- Dynamic Right Info (Timer for Timed, Words Found for Infinity) -->
-            <div id="dynamic-info-panel" class="bg-gradient-to-br from-slate-900 to-slate-950 border border-slate-800/80 p-3 rounded-2xl flex items-center justify-between relative overflow-hidden shadow-lg">
+            <!-- Dynamic Right Info (Timer for Timed, Words Found for Infinity - CLICKABLE) -->
+            <div id="dynamic-info-panel" onclick="openFoundWordsModal()" class="cursor-pointer hover:border-brand-500/50 hover:bg-slate-900/90 active:scale-95 transition-all bg-gradient-to-br from-slate-900 to-slate-950 border border-slate-800/80 p-3 rounded-2xl flex items-center justify-between relative overflow-hidden shadow-lg group" title="Click to view found words">
                 <div class="flex-1">
-                    <span id="dynamic-title" class="text-[10px] text-slate-400 font-bold uppercase tracking-wider block mb-0.5">WORDS FOUND</span>
+                    <span id="dynamic-title" class="text-[10px] text-slate-400 font-bold uppercase tracking-wider block mb-0.5">
+                        WORDS FOUND <i class="fa-regular fa-eye ml-1 text-slate-500 group-hover:text-brand-400 transition-colors"></i>
+                    </span>
                     <div class="flex items-baseline gap-1.5">
                         <span id="dynamic-value" class="text-2xl font-black tracking-tight text-white">0</span>
                         <span id="multiplier-badge" class="hidden text-[10px] font-extrabold text-emerald-400 bg-emerald-500/10 px-1.5 py-0.5 rounded">1x</span>
@@ -341,7 +343,7 @@
             <div class="bg-slate-900/60 backdrop-blur-md border border-slate-800/80 rounded-2xl p-3 shadow-lg">
                 <div class="flex items-center justify-between mb-2.5">
                     <h4 class="text-[10px] text-slate-400 font-bold uppercase tracking-wider flex items-center gap-1.5">
-                        <i class="fa-solid fa-list text-brand-400"></i> Board Words Count
+                        <i class="fa-solid fa-compass text-brand-400"></i> Target Words (3+ Letters)
                     </h4>
                     <!-- Reveal hint button renamed to Hint -->
                     <button onclick="triggerRevealHint()" class="text-[10px] text-emerald-400 hover:text-emerald-300 font-bold flex items-center gap-1 bg-emerald-500/10 px-3 py-0.5 rounded-full transition-colors active:scale-95 shadow-sm border border-emerald-500/10">
@@ -349,13 +351,38 @@
                     </button>
                 </div>
                 
-                <!-- Hint List Area (Displays Word Counts) -->
-                <div id="hint-container" class="flex flex-wrap gap-2">
-                    <!-- Populated dynamically -->
+                <!-- Hint List Area (Displays Word Clues) -->
+                <div id="hint-container" class="flex flex-col gap-2">
+                    <!-- Populated dynamically with grouped target words -->
                 </div>
             </div>
         </footer>
 
+    </div>
+
+    <!-- Found Words List Overlay Modal -->
+    <div id="found-words-modal" class="fixed inset-0 bg-slate-950/90 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-slate-900 border border-slate-800 rounded-3xl p-6 max-w-sm w-full relative max-h-[80vh] flex flex-col justify-between shadow-2xl animate-fade-in">
+            <div class="flex flex-col min-h-0">
+                <div class="flex items-center justify-between mb-4 shrink-0">
+                    <h3 class="text-lg font-black text-brand-300 flex items-center gap-2">
+                        <i class="fa-solid fa-book-open"></i> Words Found So Far
+                    </h3>
+                    <button onclick="closeFoundWordsModal()" class="text-slate-400 hover:text-white w-8 h-8 flex items-center justify-center rounded-full hover:bg-slate-850 transition-colors">
+                        <i class="fa-solid fa-xmark text-lg"></i>
+                    </button>
+                </div>
+                
+                <!-- List display container -->
+                <div id="found-words-list-container" class="space-y-2 overflow-y-auto pr-2 text-left flex-1 scrollbar-thin">
+                    <!-- Filled dynamically -->
+                </div>
+            </div>
+            
+            <button onclick="closeFoundWordsModal()" class="w-full mt-6 bg-slate-800 hover:bg-slate-750 text-slate-200 font-bold py-2.5 px-6 rounded-xl active:scale-95 transition-all text-xs shrink-0">
+                Back to Grid
+            </button>
+        </div>
     </div>
 
     <!-- Game Over Screen Modal -->
@@ -396,10 +423,10 @@
         // --- BUILT-IN COMMON WORD DICTIONARY (Significantly Expanded 3-Letter Words) ---
         const DICTIONARY_RAW = [
             // Robust 3-Letter Words Suite
-            "THE", "AND", "ARE", "FOR", "NOT", "BUT", "YOU", "RUN", "FLY", "SEE", "DOG", "CAT", "BOX", "SUN", "BOY", "TOY", "RED", "GET", "OUT", "HOW", "HOT", "NEW", "OLD", "BIG", "RAW", "TEN", "OAK", "MAP", "CAR", "BUS", "WIN", "NET", "COB", "CUP", "PIN", "PEN", "HAT", "BAG", "DIG", "FIT", "HIT", "KEY", "LEG", "LIP", "MAD", "MIX", "NUT", "PET", "SAD", "TAG", "VAN", "WET", "ZIP", "YES", "OWN", "AIR", "ICE", "WAR", "EAR", "EYE", "JOY", "CRY", "TRY", "LOW", "ROW", "SEA", "WAY", "DAY", "END", "NOW", "ONE", "TWO", "USE", "WHO", "WHY", "ASK", "BAD", "CUT", "DRY", "EAT", "FAR", "FIX", "FUN", "ILL", "JOB", "LAY", "LIE", "MAN", "PAY", "SIT", "TAX", "TON", "YET", "ACT", "ADD", "AGE", "AGO", "AIM", "ALE", "ALL", "APE", "ARM", "ART", "ASH", "AWE", "AXE", "BAN", "BAR", "BAT", "BED", "BEE", "BEG", "BET", "BIN", "BIT", "BOW", "BUD", "BUG", "BUM", "BYE", "CAB", "CAN", "CAP", "COW", "COY", "CUB", "CUE", "DAM", "DEN", "DEW", "DID", "DIM", "DIN", "DIP", "DOE", "DON", "DOT", "DUE", "DUG", "DYE", "EEL", "EGO", "ELF", "ELK", "ELM", "ERA", "ERR", "EVE", "FAN", "FAT", "FED", "FEW", "FIB", "FIG", "FIN", "FIR", "FOE", "FOG", "FOX", "FRY", "GAP", "GAS", "GEM", "GIG", "GIN", "GOD", "GUM", "GUT", "GUY", "GYM", "HAM", "HAY", "HEM", "HEN", "HER", "HEY", "HIM", "HIP", "HIS", "HOG", "HOP", "HUG", "HUM", "HUT", "INK", "INN", "ION", "ITS", "IVY", "JAM", "JAR", "JAW", "JET", "JIG", "JOG", "JOT", "KEG", "KEN", "KID", "KIN", "KIT", "LAB", "LAD", "LAG", "LAP", "LAW", "LEA", "LED", "LET", "LID", "LOB", "LOG", "LOP", "LOT", "LUG", "LUX", "LYE", "MAT", "MAY", "MED", "MEN", "MET", "MID", "MOB", "MOD", "MOP", "MOW", "MUD", "MUG", "MUM", "NAB", "NAG", "NAY", "NEO", "NIB", "NIL", "NIP", "NOD", "NON", "NOR", "NUN", "NUT", "OAF", "OAR", "OAT", "ODD", "ODE", "OFF", "OFT", "OIL", "OPT", "ORB", "ORE", "OUR", "OUT", "OVA", "OWE", "OWL", "OWN", "PAD", "PAL", "PAN", "PAR", "PAT", "PAW", "PAY", "PEA", "PEG", "PEP", "PER", "PET", "PEW", "PIG", "PIN", "PIP", "PIT", "PLY", "POD", "POP", "POT", "PRO", "PRY", "PUB", "PUG", "PUN", "PUP", "PUT", "RAD", "RAG", "RAM", "RAN", "RAP", "RAT", "RAY", "REF", "REG", "REP", "RIB", "RID", "RIG", "RIM", "RIP", "ROB", "ROD", "ROE", "ROT", "ROW", "RUB", "RUE", "RUG", "RUM", "RUT", "RYE", "SAC", "SAG", "SAP", "SAT", "SAW", "SAY", "SEC", "SEE", "SEN", "SET", "SEW", "SEX", "SHE", "SHY", "SIB", "SIN", "SIP", "SIR", "SIS", "SIT", "SIX", "SKI", "SKY", "SLY", "SOB", "SOD", "SOL", "SON", "SOP", "SOW", "SOY", "SPA", "SPY", "SUB", "SUE", "SUM", "SUP", "TAB", "TAD", "TAG", "TAN", "TAP", "TAR", "TAT", "TAX", "TEA", "TED", "TEE", "TEN", "THE", "THO", "THY", "TIC", "TIE", "TIN", "TIP", "TIT", "TOD", "TOE", "TOG", "TOM", "TON", "TOO", "TOP", "TOT", "TOW", "TOY", "TRY", "TUB", "TUG", "TUN", "TUT", "TUX", "TWO", "UFO", "UGH", "UMP", "URN", "USE", "VAN", "VAT", "VET", "VEX", "VIA", "VOW", "WAD", "WAG", "WAN", "WAR", "WAS", "WET", "WHO", "WHY", "WIG", "WIN", "WIT", "WOE", "WOK", "WON", "WOO", "WOW", "WRY", "YAK", "YAM", "YAP", "YAW", "YEA", "YEN", "YEP", "YES", "YET", "YEW", "YIP", "YOB", "YOU", "YOW", "YUM", "YUP", "ZAG", "ZAP", "ZED", "ZEE", "ZEN", "ZIG", "ZIP", "ZIT", "ZOO",
+            "THE", "AND", "ARE", "FOR", "NOT", "BUT", "YOU", "RUN", "FLY", "SEE", "DOG", "CAT", "BOX", "SUN", "BOY", "TOY", "RED", "GET", "OUT", "HOW", "HOT", "NEW", "OLD", "BIG", "RAW", "TEN", "OAK", "MAP", "CAR", "BUS", "WIN", "NET", "COB", "CUP", "PIN", "PEN", "HAT", "BAG", "DIG", "FIT", "HIT", "KEY", "LEG", "LIP", "MAD", "MIX", "NUT", "PET", "SAD", "TAG", "VAN", "WET", "ZIP", "YES", "OWN", "AIR", "ICE", "WAR", "EAR", "EYE", "JOY", "CRY", "TRY", "LOW", "ROW", "SEA", "WAY", "DAY", "END", "NOW", "ONE", "TWO", "USE", "WHO", "WHY", "ASK", "BAD", "CUT", "DRY", "EAT", "FAR", "FIX", "FUN", "ILL", "JOB", "LAY", "LIE", "MAN", "PAY", "SIT", "TAX", "TON", "YET", "ACT", "ADD", "AGE", "AGO", "AIM", "ALE", "ALL", "APE", "ARM", "ART", "ASH", "AWE", "AXE", "BAN", "BAR", "BAT", "BED", "BEE", "BEG", "BET", "BIN", "BIT", "BOW", "BUD", "BUG", "BUM", "BYE", "CAB", "CAN", "CAP", "COW", "COY", "CUB", "CUE", "DAM", "DEN", "DEW", "DID", "DIM", "DIN", "DIP", "DOE", "DON", "DOT", "DUE", "DUG", "DYE", "EEL", "EGO", "ELF", "ELK", "ELM", "ERA", "ERR", "EVE", "FAN", "FAT", "FED", "FEW", "FIB", "FIG", "FIN", "FIR", "FOE", "FOG", "FOX", "FRY", "GAP", "GAS", "GEM", "GIG", "GIN", "GOD", "GUM", "GUT", "GUY", "GYM", "HAM", "HAY", "HEM", "HEN", "HER", "HEY", "HIM", "HIP", "HIS", "HOG", "HOP", "HUG", "HUM", "HUT", "INK", "INN", "ION", "ITS", "IVY", "JAM", "JAR", "JAW", "JET", "JIG", "JOG", "JOT", "KEG", "KEN", "KID", "KIN", "KIT", "LAB", "LAD", "LAG", "LAP", "LAW", "LEA", "LED", "LED", "LET", "LID", "LOB", "LOG", "LOP", "LOT", "LUG", "LUX", "LYE", "MAT", "MAY", "MED", "MEN", "MET", "MID", "MOB", "MOD", "MOP", "MOW", "MUD", "MUG", "MUM", "NAB", "NAG", "NAY", "NEO", "NIB", "NIL", "NIP", "NOD", "NON", "NOR", "NUN", "NUT", "OAF", "OAR", "OAT", "ODD", "ODE", "OFF", "OFT", "OIL", "OPT", "ORB", "ORE", "OUR", "OUT", "OVA", "OWE", "OWL", "OWN", "PAD", "PAL", "PAN", "PAR", "PAT", "PAW", "PAY", "PEA", "PEG", "PEP", "PER", "PET", "PEW", "PIG", "PIN", "PIP", "PIT", "PLY", "POD", "POP", "POT", "PRO", "PRY", "PUB", "PUG", "PUN", "PUP", "PUT", "RAD", "RAG", "RAM", "RAN", "RAP", "RAT", "RAY", "REF", "REG", "REP", "RIB", "RID", "RIG", "RIM", "RIP", "ROB", "ROD", "ROE", "ROT", "ROW", "RUB", "RUE", "RUG", "RUM", "RUT", "RYE", "SAC", "SAG", "SAP", "SAT", "SAW", "SAY", "SEC", "SEE", "SEN", "SET", "SEW", "SEX", "SHE", "SHY", "SIB", "SIN", "SIP", "SIR", "SIS", "SIT", "SIX", "SKI", "SKY", "SLY", "SOB", "SOD", "SOL", "SON", "SOP", "SOW", "SOY", "SPA", "SPY", "SUB", "SUE", "SUM", "SUP", "TAB", "TAD", "TAG", "TAN", "TAP", "TAR", "TAT", "TAX", "TEA", "TED", "TEE", "TEN", "THE", "THO", "THY", "TIC", "TIE", "TIN", "TIP", "TIT", "TOD", "TOE", "TOG", "TOM", "TON", "TOO", "TOP", "TOT", "TOW", "TOY", "TRY", "TUB", "TUG", "TUN", "TUT", "TUX", "TWO", "UFO", "UGH", "UMP", "URN", "USE", "VAN", "VAT", "VET", "VEX", "VIA", "VOW", "WAD", "WAG", "WAN", "WAR", "WAS", "WET", "WHO", "WHY", "WIG", "WIN", "WIT", "WOE", "WOK", "WON", "WOO", "WOW", "WRY", "YAK", "YAM", "YAP", "YAW", "YEA", "YEN", "YEP", "YES", "YET", "YEW", "YIP", "YOB", "YOU", "YOW", "YUM", "YUP", "ZAG", "ZAP", "ZED", "ZEE", "ZEN", "ZIG", "ZIP", "ZIT", "ZOO",
             // 4-Letter Words
             "ABLE", "ACID", "ACRE", "ACTS", "AGED", "ALGE", "ALSO", "AMEN", "ANEW", "APEX", "APES", "ARCH", "AREA", "ARMS", "ARMY", "ARTS", "ATOM", "AUNT", "AURA", "AUTO",
-            "BABY", "BACK", "BAKE", "BALL", "BAND", "BANK", "BARE", "BARK", "BARN", "BASE", "BASH", "BATH", "BEAK", "BEAM", "BEAN", "BEAR", "BEAT", "BEEF", "BEER", "BELL", "BELT", "BEND", "BEST", "BETA", "BIAS", "BIDS", "BIKE", "BILL", "BIND", "BIRD", "BITE", "BLOW", "BLUE", "BOAT", "BODY", "BODY", "BOIL", "BOLD", "BOND", "BONE", "BOOK", "BOOM", "BOOT", "BOSS", "BOTH", "BOWL", "BULB", "BULL", "BUMP", "BURN", "BUSH", "BUSY", "BUZZ",
+            "BABY", "BACK", "BAKE", "BALL", "BAND", "BANK", "BARE", "BARK", "BARN", "BASE", "BASH", "BATH", "BEAK", "BEAM", "BEAN", "BEAR", "BEAT", "BEEF", "BEER", "BELL", "BELT", "BEND", "BEST", "BETA", "BIAS", "BIDS", "BIKE", "BILL", "BIND", "BIRD", "BITE", "BLOW", "BLUE", "BOAT", "BODY", "BOIL", "BOLD", "BOND", "BONE", "BOOK", "BOOM", "BOOT", "BOSS", "BOTH", "BOWL", "BULB", "BULL", "BUMP", "BURN", "BUSH", "BUSY", "BUZZ",
             "CAGE", "CAKE", "CALF", "CALL", "CALM", "CAMP", "CANE", "CANS", "CAPE", "CARD", "CARE", "CASE", "CASH", "CAST", "CAVE", "CELL", "CENT", "CHEF", "CHIN", "CHIP", "CHOP", "CITY", "CLAN", "CLAW", "CLAY", "CLIP", "CLUB", "COAL", "COAT", "CODE", "COIL", "COIN", "COLD", "CONE", "COOK", "COOL", "COPE", "COPY", "CORD", "CORE", "CORK", "CORN", "COST", "COUP", "COVE", "COW", "CRAB", "CREW", "CROP", "CROW", "CUBE", "CULT", "CUP", "CURE", "CURL", "CUTE",
             "DARE", "DARK", "DART", "DASH", "DATA", "DATE", "DAWN", "DAYS", "DEAD", "DEAF", "DEAL", "DEAR", "DEBT", "DECK", "DEED", "DEEM", "DEER", "DEFI", "DEFY", "DELI", "DENT", "DESK", "DIAL", "DIET", "DIGS", "DIME", "DINE", "DINT", "DIRT", "DISC", "DISH", "DISK", "DIVE", "DOCK", "DOES", "DOGS", "DOLL", "DOME", "DONE", "DOOR", "DOSE", "DOWN", "DRAB", "DRAG", "DRAW", "DREW", "DROP", "DRUM", "DUCK", "DUCT", "DUEL", "DUET", "DUKE", "DULL", "DUNE", "DUST", "DUTY",
             "EACH", "EARN", "EARS", "EASE", "EAST", "EASY", "EATS", "ECHO", "EDGE", "EDIT", "EELS", "EGGS", "ELSE", "EMIT", "ENDS", "ENVY", "EPIC", "ETCH", "EVEN", "EVER", "EVIL", "EXAM", "EXIT", "EYES",
@@ -423,7 +450,7 @@
             "HABIT", "HAMMER", "HANDLE", "HANGER", "HAPPEN", "HAPPY", "HARBOR", "HARDEN", "HARVEST", "HATRED", "HAZARD", "HEADER", "HEALTH", "HEARST", "HEART", "HEAVEN", "HEAVY", "HECTOR", "HEIGHT", "HELMET", "HEROIC", "HIDDEN", "HIGHER", "HIGHWAY", "HINDER", "HINTED", "HISTORY", "HOCKEY", "HOLDEN", "HOLLOW", "HOMAGE", "HONEST", "HONEY", "HONOR", "HOOVER", "HORIZON", "HORNET", "HORROR", "HOSTEL", "HOTEL", "HOVER", "HUMAN", "HUMBLE", "HUNGER", "HUNTER", "HURDLE", "HYBRID",
             "ICONIC", "IDEALS", "IGNORE", "IMAGE", "IMPACT", "IMPORT", "IMPOSE", "INCHES", "INCOME", "INDEED", "INDEX", "INDIAN", "INDIGO", "INFANT", "INFORM", "INGRAM", "INJECT", "INJURY", "INLAND", "INSECT", "INSIDE", "INSIST", "INTENT", "INTERN", "INVADE", "INVENT", "INVEST", "INVITE", "INWARD", "IONIC", "ISLAND", "ISSUES", "ITALIC", "JACKET", "JAGUAR", "JERSEY", "JESTER", "JEWELS", "JOINED", "JOINT", "JORDAN", "JOSEPH", "JOURNEY", "JUDGE", "JUNGLE", "JUNIOR", "JUSTICE",
             "KARATE", "KEEPER", "KERNEL", "KETTLE", "KIDNEY", "KINDLY", "KINETIC", "KINGDOM", "KITCHEN", "KNIGHT", "LABELS", "LABOR", "LADDER", "LAGOON", "LANCER", "LANDING", "LANTERN", "LAPTOP", "LARGER", "LARVAL", "LASERS", "LATENT", "LATEST", "LATITUDE", "LAUGHS", "LAUNCH", "LAUREL", "LAVENDER", "LAYERS", "LAYOUT", "LEADER", "LEAGUE", "LEARN", "LEASED", "LEATHER", "LEGACY", "LEGEND", "LENGTH", "LENSES", "LEOPARD", "LETTER", "LEVELS", "LIBERA", "LIGHTS", "LINEAR", "LIONESS", "LIQUID", "LISTEN", "LITTER", "LIVELY", "LIVELY", "SOLVER", "SOMBER", "SONATA", "SORROW", "SOUGHT", "SOUNDS", "SOURCE", "SOUTHEY", "SPACES", "SPARE", "SPARKS", "SPATIAL", "SPEARS", "SPEECH", "SPEEDY", "SPELLS", "SPHERE", "SPIDER", "SPIGOT", "SPINAE", "SPIRAL", "SPIRIT", "SPLASH", "SPLEEN", "SPLINE", "SPLIT", "SPOKES", "SPONGE", "SPOONS", "SPORTS", "SPOTS", "SPOUSE", "SPREAD", "SPRING", "SPRINT", "SPRUCE", "SPUNKY", "SQUAD", "SQUARE", "SQUASH", "STABLE", "STACKS", "STAFFS", "STAGES", "STAINS", "STAIRS", "STAKES", "STALKS", "STAMEN", "STAMPS", "STANCE", "STANDS", "STAPLE", "STARCH", "STARED", "STARTS", "STARVE", "STATED", "STATES", "STATIC", "STATUE", "STATUS", "STAVES", "STAYS", "STEADY", "STEAKS", "STEALS", "STEAMY", "STEELS", "STEERA", "STELLAR", "STEMS", "STENCIL", "STEREO", "STERLE", "STEWED", "STICKS", "STICKY", "STIFF", "STINGS", "STINGY", "STITCH", "STOCKS", "STOKES", "STOLEN", "STONES", "STONEY", "STOOLS", "STOPS", "STORED", "STORES", "STORMS", "STORMY", "STORYS", "STOVES", "STRAIN", "STRAND", "STRAPS", "STRATA", "STRAWS", "STREAK", "STREAM", "STREET", "STRESS", "STRICT", "STRIDE", "STRIKE", "STRING", "STRIP", "STROKE", "STRONGLY", "STRUCK", "STRUCT", "STRUTS", "STUCCO", "STUDIO", "STUDY", "STUFFS", "STUFFY", "STUMPS", "STUNNING", "STUNT", "STYLUS", "SUBDUE", "SUBMIT", "SUBSET", "SUBTLE", "SUBURB", "SUBWAY", "SUCKER", "SUDDEN", "SUFFER", "SUGARS", "SUGARY", "SUITED", "SUITES", "SULFUR", "SULTAN", "SUMMAR", "SUMMIT", "SUMMON", "SUNDAE", "SUNDAY", "SUNSET", "SUPERB", "SUPPLE", "SUPPLY", "SUPPORT", "SUPREM", "SURELY", "SURFER", "SURGES", "SURPLUS", "SURVEY", "SURVIV", "SUTURE", "SWAMPY", "SWARMS", "SWEARS", "SWEATY", "SWEDEN", "SWEEPS", "SWEETS", "SWEETY", "SWELLS", "SWERVE", "SWIFTY", "SWINGS", "SWIPE", "SWIRL", "SWITCH", "SWIVEL", "SWORDS", "SYMBOL", "SYSTEM",
-            "TABLES", "TABLET", "TACKLE", "TACTIC", "TAGGER", "TAILOR", "TALENT", "TALKED", "TALKER", "TALLER", "TALLOW", "TALMUD", "TAMING", "TANDEM", "TANGLE", "TANKER", "TAPERS", "TAPING", "TARGET", "TARIFF", "TASSEL", "TASTED", "TASTER", "TASTES", "TASTEY", "TATTOO", "TAUGHT", "TAVERN", "TAXING", "TEACH", "TEAMS", "TEAPOT", "TEASER", "TEASING", "TECHNO", "TEDDY", "TEEMING", "TEENS", "TEETH", "TELLER", "TEMPLE", "TENANT", "TENDER", "TENDON", "TENNIS", "TENORS", "TENSEY", "TENSOR", "TENTH", "TENURE", "TERMS", "TERRAIN", "TERROR", "TESTED", "TESTER", "TETHER", "TEXTS", "THANKS", "THEORY", "THERMAL", "THESIS", "THIGHS", "THINGS", "THINLY", "THIRDS", "THIRST", "THIRTY", "THOMAS", "THORAX", "THORNS", "THORNY", "THREAD", "THREAT", "THREE", "THRIFT", "THRILL", "THRIVE", "THROAT", "THRONE", "THRONG", "THRUSH", "THRUST", "THUMBS", "TICKET", "TIDAL", "TIDIED", "TIGHTS", "TIMBER", "TIMELY", "TIMERS", "TIMING", "TINDER", "TINKER", "TINSEL", "TINTED", "TIPPED", "TIPPER", "TOADEY", "TOASTS", "TOASTY", "TOBACCO", "TODDLER", "TOGETHER", "TOILET", "TOKENS", "TOLER", "TOLLWAY", "TOMATO", "TONGUE", "TOPIC", "TOPPED", "TOPPER", "TORCH", "TORNAD", "TORQUE", "TORREN", "TOSSING", "TOTALS", "TOUCHY", "TOWELS", "TOWERS", "TOWNER", "TOXINS", "TRACER", "TRACKS", "TRACTS", "TRADER", "TRADES", "TRAFIC", "TRAILS", "TRAINY", "TRAITS", "TRAMPS", "TRANS", "TRAPED", "TRAPPER", "TRAVEL", "TREADS", "TREATS", "TREBLE", "TREKED", "TREMOR", "TRENCH", "TRENDS", "TRENDY", "TRIAL", "TRIANG", "TRIBES", "TRICKS", "TRICKY", "TRIFLE", "TRIGGER", "TRIMER", "TRIPLE", "TRIPOD", "TRIVIA", "TROPHY", "TROPIC", "TROTS", "TROUGH", "TROUPE", "TROWEL", "TRUCKS", "TRUDGE", "TRUEST", "TRUMPE", "TRUNKS", "TRUSTY", "TRUTHS", "TUBING", "TUBULAR", "TUCKED", "TUCKER", "TUESDA", "TULIPS", "TUMBLE", "TUMOR", "TUNING", "TUNNEL", "TURBIN", "TURKEY", "TURNING", "TURNIP", "TURRET", "TURTLE", "TUSKED", "TUTORS", "TUXEDO", "TWELVE", "TWENTY", "TWIGGY", "TWILIG", "TWINED", "TWINNS", "TWIRL", "TWISTY", "TWITCH", "TYPIST", "TYPOGR", "ULCERS", "UMPIRES", "UNABLE", "UNCLES", "UNDER", "UNEASY", "UNFOLD", "UNICON", "UNION", "UNIQUE", "UNISON", "UNITS", "UNITED", "UNITYS", "UNJUST", "UNLESS", "UNPLUG", "UNREAL", "UNTIDY", "UNTOLD", "UPWARD", "URGENT", "URGING", "USABLE", "USAGE", "USEFUL", "UTTER", "VACANT", "VACUUM", "VALLEY", "VALVED", "VALVES", "VANISH", "VAPORS", "VECTER", "VEILAD", "VELVET", "VENEER", "VENOM", "VENTIL", "VENTUR", "VERBAL", "VERDICT", "VERGER", "VERSES", "VESSEL", "VESTED", "VIABLE", "VICTIM", "VICTOR", "VIDEOS", "VIEWER", "VIGOR", "VIOLIN", "VIRGIN", "VIRTUE", "VISION", "VISUAL", "VOICES", "VOLCAN", "VORTEX", "VOWELS", "VOYAGE", "WAFERS", "WAGGON", "WALKED", "WALKER", "WALLET", "WALNUT", "WANDER", "WANTED", "WARBLER", "WARDEN", "WARMED", "WARMER", "WARMTH", "WARNING", "WARPED", "WARREN", "WASHED", "WASHER", "WASTED", "WASTER", "WASTES", "WATERS", "WATERY", "WAVING", "WEAKEN", "WEALTH", "WEAPON", "WEARER", "WEASEL", "WEAVED", "WEAVER", "WEBING", "WEDGED", "WEDGES", "WEEKLY", "WEEPIN", "WEIGHS", "WEIGHT", "WELDED", "WELDER", "WELLS", "WHEELS", "WHILST", "WHINES", "WHIPED", "WHIRL", "WHISKY", "WHITER", "WHOLLY", "WICKED", "WIDELY", "WIDOWS", "WILDER", "WILDLY", "WILTED", "WINDER", "WINDOW", "WINTER", "WIRING", "WISDOM", "WISHED", "WISHES", "WITHIN", "WIZARD", "WOLVES", "WONDER", "WOODED", "WOODEN", "WOOLEN", "WORDSY", "WORKED", "WORKER", "WORLDS", "WORMSY", "WORRYS", "WREATH", "WRECK", "WRIST", "WRITER", "WRITES", "WRONG", "YACHTS", "YAWNING", "YEARLY", "YELLOW", "YIELDS", "YOUTHS", "ZEBRAS", "ZENITH", "ZEROED", "ZESTEY", "ZIPPER", "ZODIAC"
+            "TABLES", "TABLET", "TACKLE", "TACTIC", "TAGGER", "TAILOR", "TALENT", "TALKED", "TALKER", "TALLER", "TALLOW", "TALMUD", "TAMING", "TANDEM", "TANGLE", "TANKER", "TAPERS", "TAPING", "TARGET", "TARIFF", "TASSEL", "TASTED", "TASTER", "TASTES", "TASTEY", "TATTOO", "TAUGHT", "TAVERN", "TAXING", "TEACH", "TEAMS", "TEAPOT", "TEASER", "TEASING", "TECHNO", "TEDDY", "TEEMING", "TEENS", "TEETH", "TELLER", "TEMPLE", "TENANT", "TENDER", "TENDON", "TENNIS", "TENORS", "TENSEY", "TENSOR", "TENTH", "TENURE", "TERMS", "TERRAIN", "TERROR", "TESTED", "TESTER", "TETHER", "TEXTS", "THANKS", "THEORY", "THERMAL", "THESIS", "THIGHS", "THINGS", "THINLY", "THIRDS", "THIRST", "THIRTY", "THOMAS", "THORAX", "THORNS", "THORNY", "THREAD", "THREAT", "THREE", "THRIFT", "THRILL", "THRIVE", "THROAT", "THRONE", "THRONG", "THRUSH", "THRUST", "THUMBS", "TICKET", "TIDAL", "TIDIED", "TIGHTS", "TIMBER", "TIMELY", "TIMERS", "TIMING", "TINDER", "TINKER", "TINKER", "TINSEL", "TINTED", "TIPPED", "TIPPER", "TOADEY", "TOASTS", "TOASTY", "TOBACCO", "TODDLER", "TOGETHER", "TOILET", "TOKENS", "TOLER", "TOLLWAY", "TOMATO", "TONGUE", "TOPIC", "TOPPED", "TOPPER", "TORCH", "TORNAD", "TORQUE", "TORREN", "TOSSING", "TOTALS", "TOUCHY", "TOWELS", "TOWERS", "TOWNER", "TOXINS", "TRACER", "TRACKS", "TRACTS", "TRADER", "TRADES", "TRAFIC", "TRAILS", "TRAINY", "TRAITS", "TRAMPS", "TRANS", "TRAPED", "TRAPPER", "TRAVEL", "TREADS", "TREATS", "TREBLE", "TREKED", "TREMOR", "TRENCH", "TRENDS", "TRENDY", "TRIAL", "TRIANG", "TRIBES", "TRICKS", "TRICKY", "TRIFLE", "TRIGGER", "TRIMER", "TRIPLE", "TRIPOD", "TRIVIA", "TROPHY", "TROPIC", "TROTS", "TROUGH", "TROUPE", "TROWEL", "TRUCKS", "TRUDGE", "TRUEST", "TRUMPE", "TRUNKS", "TRUSTY", "TRUTHS", "TUBING", "TUBULAR", "TUCKED", "TUCKER", "TUESDA", "TULIPS", "TUMBLE", "TUMOR", "TUNING", "TUNNEL", "TURBIN", "TURKEY", "TURNING", "TURNIP", "TURRET", "TURTLE", "TUSKED", "TUTORS", "TUXEDO", "TWELVE", "TWENTY", "TWIGGY", "TWILIG", "TWINED", "TWINNS", "TWIRL", "TWISTY", "TWISTY", "TWITCH", "TYPIST", "TYPOGR", "ULCERS", "UMPIRES", "UNABLE", "UNCLES", "UNDER", "UNEASY", "UNFOLD", "UNICON", "UNION", "UNIQUE", "UNISON", "UNITS", "UNITED", "UNITYS", "UNJUST", "UNLESS", "UNPLUG", "UNREAL", "UNTIDY", "UNTOLD", "UPWARD", "URGENT", "URGING", "USABLE", "USAGE", "USEFUL", "UTTER", "VACANT", "VACUUM", "VALLEY", "VALVED", "VALVES", "VANISH", "VAPORS", "VECTER", "VEILAD", "VELVET", "VENEER", "VENOM", "VENOM", "VENTIL", "VENTUR", "VERBAL", "VERDICT", "VERGER", "VERSES", "VESSEL", "VESTED", "VIABLE", "VICTIM", "VICTOR", "VIDEOS", "VIEWER", "VIGOR", "VIOLIN", "VIRGIN", "VIRTUE", "VISION", "VISUAL", "VOICES", "VOLCAN", "VORTEX", "VOWELS", "VOYAGE", "WAFERS", "WAGGON", "WALKED", "WALKER", "WALLET", "WALNUT", "WANDER", "WANTED", "WARBLER", "WARDEN", "WARMED", "WARMER", "WARMTH", "WARNING", "WARPED", "WARREN", "WASHED", "WASHER", "WASTED", "WASTER", "WASTES", "WATERS", "WATERY", "WAVING", "WEAKEN", "WEALTH", "WEAPON", "WEARER", "WEASEL", "WEAVED", "WEAVER", "WEBING", "WEDGED", "WEDGES", "WEEKLY", "WEEPIN", "WEIGHS", "WEIGHT", "WELDED", "WELDER", "WELLS", "WHEELS", "WHILST", "WHINES", "WHIPED", "WHIRL", "WHISKY", "WHITER", "WHOLLY", "WICKED", "WIDELY", "WIDOWS", "WILDER", "WILDLY", "WILTED", "WINDER", "WINDOW", "WINTER", "WIRING", "WISDOM", "WISHED", "WISHES", "WITHIN", "WIZARD", "WOLVES", "WONDER", "WOODED", "WOODEN", "WOOLEN", "WORDSY", "WORKED", "WORKER", "WORLDS", "WORMSY", "WORRYS", "WREATH", "WRECK", "WRIST", "WRITER", "WRITES", "WRONG", "YACHTS", "YAWNING", "YEARLY", "YELLOW", "YIELDS", "YOUTHS", "ZEBRAS", "ZENITH", "ZEROED", "ZESTEY", "ZIPPER", "ZODIAC"
         ];
 
         // Convert raw dictionary to a standard Set for instant O(1) searches
@@ -435,6 +462,7 @@
             gridSize: 9,          // Variable size: 4x4 up to 9x9
             score: 0,             // Current session score
             wordsFound: 0,        // Total count of words found in session
+            foundWordsHistory: [], // Chronological log of found words in this run
             currentSelection: [], // Array of indices selected during current drag
             dragStartCell: null,  // Index of starting cell {r, c}
             hintWords: [],        // Active words present on board displayed as hints
@@ -443,6 +471,12 @@
                 4: 0,
                 5: 0,
                 '6+': 0
+            },
+            targetWordsList: {    // Grouped lists of exact words of length 3+ currently on board
+                3: [],
+                4: [],
+                5: [],
+                '6+': []
             },
             highScore: {
                 infinity: 0,
@@ -724,58 +758,105 @@
 
             // Count remaining matches classified by size
             const counts = { 3: 0, 4: 0, 5: 0, '6+': 0 };
-            for (const word of foundWords.keys()) {
-                const len = word.length;
-                if (len === 3) counts[3]++;
-                else if (len === 4) counts[4]++;
-                else if (len === 5) counts[5]++;
-                else if (len >= 6) counts['6+']++;
-            }
-            boardState.wordCounts = counts;
+            const targets = { 3: [], 4: [], 5: [], '6+': [] };
+            const allTargetWords = [];
 
-            const sortedWords = Array.from(foundWords.keys()).sort((a, b) => b.length - a.length);
-            
-            const randomHints = [];
-            while (randomHints.length < Math.min(3, sortedWords.length)) {
-                const randWord = sortedWords[Math.floor(Math.random() * sortedWords.length)];
-                if (!randomHints.some(h => h.word === randWord)) {
-                    randomHints.push({
-                        word: randWord,
-                        indices: foundWords.get(randWord)
-                    });
+            for (const [word, indices] of foundWords.entries()) {
+                const len = word.length;
+                if (len === 3) {
+                    counts[3]++;
+                    targets[3].push(word);
+                    allTargetWords.push({ word, indices });
+                } else if (len === 4) {
+                    counts[4]++;
+                    targets[4].push(word);
+                    allTargetWords.push({ word, indices });
+                } else if (len === 5) {
+                    counts[5]++;
+                    targets[5].push(word);
+                    allTargetWords.push({ word, indices });
+                } else if (len >= 6) {
+                    counts['6+']++;
+                    targets['6+'].push(word);
+                    allTargetWords.push({ word, indices });
                 }
             }
+            boardState.wordCounts = counts;
+            boardState.targetWordsList = targets;
 
+            // Pick up to 3 random word entities for immediate hint helper pool
+            const randomHints = [];
+            const pool = [...allTargetWords];
+            while (randomHints.length < Math.min(3, pool.length)) {
+                const randIndex = Math.floor(Math.random() * pool.length);
+                randomHints.push(pool.splice(randIndex, 1)[0]);
+            }
             boardState.hintWords = randomHints;
+
             renderHintBanner();
         }
 
         // --- RENDER FUNCTIONS ---
+        // Displays grouped lists of the exact words remaining on the board (Updated to support 3+ Letters)
         function renderHintBanner() {
             const container = document.getElementById('hint-container');
             container.innerHTML = "";
             
-            const counts = boardState.wordCounts || { 3: 0, 4: 0, 5: 0, '6+': 0 };
+            const targets = boardState.targetWordsList || { 3: [], 4: [], 5: [], '6+': [] };
+            const hasTargets = targets[3].length > 0 || targets[4].length > 0 || targets[5].length > 0 || targets['6+'].length > 0;
 
-            const countsData = [
-                { label: '3 Letters', count: counts[3], color: 'from-sky-500/10 to-blue-500/5 border-sky-900/30', textColor: 'text-sky-300', dotColor: 'bg-sky-400' },
-                { label: '4 Letters', count: counts[4], color: 'from-blue-500/10 to-indigo-500/5 border-blue-900/30', textColor: 'text-blue-300', dotColor: 'bg-blue-400' },
-                { label: '5 Letters', count: counts[5], color: 'from-fuchsia-500/10 to-purple-500/5 border-fuchsia-900/30', textColor: 'text-fuchsia-300', dotColor: 'bg-fuchsia-400' },
-                { label: '6+ Letters', count: counts['6+'], color: 'from-amber-500/10 to-orange-500/5 border-amber-900/30', textColor: 'text-amber-300', dotColor: 'bg-amber-400' }
+            if (!hasTargets) {
+                container.innerHTML = `
+                    <div class="text-center py-4 text-slate-500 text-xs italic">
+                        No words left! Click Hint to scramble/reveal.
+                    </div>
+                `;
+                return;
+            }
+
+            // Outer wrapper with clean layout scroll height limit
+            const scrollWrapper = document.createElement('div');
+            scrollWrapper.className = "max-h-24 overflow-y-auto pr-1 space-y-2.5 text-left scrollbar-thin";
+
+            const categories = [
+                { key: '3', label: '3 Letters', color: 'text-sky-400', badgeColor: 'bg-sky-500/10 border-sky-900/30 text-sky-300' },
+                { key: '4', label: '4 Letters', color: 'text-blue-400', badgeColor: 'bg-blue-500/10 border-blue-900/30 text-blue-300' },
+                { key: '5', label: '5 Letters', color: 'text-fuchsia-400', badgeColor: 'bg-fuchsia-500/10 border-fuchsia-900/30 text-fuchsia-300' },
+                { key: '6+', label: '6+ Letters', color: 'text-amber-400', badgeColor: 'bg-amber-500/10 border-amber-900/30 text-amber-300' }
             ];
 
-            countsData.forEach(item => {
-                const pill = document.createElement('div');
-                pill.className = `px-3 py-2 rounded-xl bg-gradient-to-br ${item.color} border text-xs font-semibold flex items-center justify-between gap-2.5 shadow-sm min-w-[90px] flex-1`;
-                pill.innerHTML = `
-                    <div class="flex items-center gap-1.5">
-                        <span class="w-1.5 h-1.5 rounded-full ${item.dotColor}"></span>
-                        <span class="text-slate-400 font-medium text-[10px] tracking-wide text-left">${item.label}</span>
-                    </div>
-                    <span class="font-extrabold ${item.textColor} font-mono text-xs">${item.count}</span>
-                `;
-                container.appendChild(pill);
+            categories.forEach(cat => {
+                const words = targets[cat.key];
+                if (words && words.length > 0) {
+                    // Sort words alphabetically
+                    words.sort();
+
+                    const section = document.createElement('div');
+                    section.className = "space-y-1";
+                    
+                    let badgesHtml = "";
+                    words.forEach(w => {
+                        badgesHtml += `
+                            <span class="px-2 py-0.5 rounded-md text-[10px] font-bold font-mono tracking-wider bg-slate-950 border border-slate-800 text-slate-300 inline-block shadow-sm">
+                                ${w}
+                            </span>
+                        `;
+                    });
+
+                    section.innerHTML = `
+                        <div class="flex items-center gap-2">
+                            <span class="text-[9px] font-black uppercase tracking-wider ${cat.color}">${cat.label}</span>
+                            <span class="text-[8px] font-extrabold px-1 rounded bg-slate-950 text-slate-500 font-mono">${words.length} remaining</span>
+                        </div>
+                        <div class="flex flex-wrap gap-1">
+                            ${badgesHtml}
+                        </div>
+                    `;
+                    scrollWrapper.appendChild(section);
+                }
             });
+
+            container.appendChild(scrollWrapper);
         }
 
         // Hint action deducting 100 points
@@ -1082,7 +1163,7 @@
             }
         }
 
-        // --- SUCCESS RESOLUTIONS, CASCADING & REFILLS ---
+        // --- SUCCESS RESOLUTIONS, REPLACEMENT IN PLACE ---
         function handleWordSuccess(word) {
             playSound('success');
             triggerVibrate();
@@ -1126,10 +1207,17 @@
                 }
             });
 
-            // Update scores
+            // Update scores & logs
             boardState.score += calculatedPoints;
             boardState.wordsFound++;
             
+            // Push to found words history log
+            boardState.foundWordsHistory.push({
+                word: word,
+                points: calculatedPoints,
+                timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' })
+            });
+
             // Rapid succession multiplier
             if (gameMode === 'timed' || gameMode === 'grow_timed') {
                 triggerMultiplierUp();
@@ -1149,10 +1237,50 @@
             // Check if play conditions require grid scaling
             const didGrow = checkGrowProgress();
 
-            // Skip default slide cascade if level-up is regenerating the entire layout
+            // Skip default in-place replacements if level-up is regenerating the entire layout
             if (!didGrow) {
                 cascadeSequence(boardState.currentSelection);
             }
+        }
+
+        // Open Words Found Log Overlay Modal
+        function openFoundWordsModal() {
+            initAudio();
+            const listContainer = document.getElementById('found-words-list-container');
+            listContainer.innerHTML = "";
+            
+            if (boardState.foundWordsHistory.length === 0) {
+                listContainer.innerHTML = `
+                    <div class="text-center py-12 text-slate-500 text-xs">
+                        <i class="fa-regular fa-folder-open text-4xl mb-3 block text-slate-600"></i>
+                        No words found in this session yet.<br>Drag letters on the grid to add entries!
+                    </div>
+                `;
+            } else {
+                // Reverse loop to show newest discovered words at the top of the modal log
+                const historyCopy = [...boardState.foundWordsHistory].reverse();
+                historyCopy.forEach((item, index) => {
+                    const row = document.createElement('div');
+                    row.className = "flex items-center justify-between p-2.5 bg-slate-950/60 border border-slate-850 rounded-xl text-xs";
+                    row.innerHTML = `
+                        <div class="flex items-center gap-2">
+                            <span class="text-slate-500 font-mono text-[9px]">#${historyCopy.length - index}</span>
+                            <span class="font-extrabold text-white tracking-wider font-mono text-sm uppercase">${item.word}</span>
+                        </div>
+                        <div class="flex items-center gap-2.5">
+                            <span class="text-[9px] text-slate-500 font-mono">${item.timestamp}</span>
+                            <span class="font-extrabold text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded font-mono">+${item.points}</span>
+                        </div>
+                    `;
+                    listContainer.appendChild(row);
+                });
+            }
+            
+            document.getElementById('found-words-modal').classList.remove('hidden');
+        }
+
+        function closeFoundWordsModal() {
+            document.getElementById('found-words-modal').classList.add('hidden');
         }
 
         // Animated notification layer displayed on board extensions
@@ -1264,6 +1392,7 @@
             }, 1200);
         }
 
+        // Multiplier progression tracker
         function triggerMultiplierUp() {
             clearTimeout(boardState.multiplierTimer);
             boardState.multiplier = Math.min(5, boardState.multiplier + 1);
@@ -1280,49 +1409,24 @@
             }, 7500);
         }
 
-        // Cascade refills mapping elements to column bounds
+        // IN-PLACE REPLACEMENT ENGINE (No letter sliding/cascading: other tiles remain completely static)
         function cascadeSequence(clearedIndices) {
-            const size = boardState.gridSize;
             const grid = [...boardState.grid];
-            const columnsToCascade = new Set();
 
+            // Simply replace matched letter locations directly in place with new random letters
             clearedIndices.forEach(idx => {
-                grid[idx] = null;
-                columnsToCascade.add(idx % size);
-            });
-
-            columnsToCascade.forEach(col => {
-                const nonNulls = [];
-                for (let row = size - 1; row >= 0; row--) {
-                    const idx = row * size + col;
-                    if (grid[idx] !== null) {
-                        nonNulls.push(grid[idx]);
-                    }
-                }
-
-                let nonNullPtr = 0;
-                for (let row = size - 1; row >= 0; row--) {
-                    const idx = row * size + col;
-                    if (nonNullPtr < nonNulls.length) {
-                        grid[idx] = nonNulls[nonNullPtr];
-                        nonNullPtr++;
-                    } else {
-                        grid[idx] = getRandomLetter();
-                    }
-                }
+                grid[idx] = getRandomLetter();
             });
 
             boardState.grid = grid;
             renderGrid();
             
+            // Reapply a brief falling animation overlay to the newly replaced coordinates for pop visual feedback
             const container = document.getElementById('grid-container');
-            columnsToCascade.forEach(col => {
-                for (let row = 0; row < size; row++) {
-                    const idx = row * size + col;
-                    const cell = container.querySelector(`[data-index="${idx}"]`);
-                    if (cell) {
-                        cell.classList.add('falling');
-                    }
+            clearedIndices.forEach(idx => {
+                const cell = container.querySelector(`[data-index="${idx}"]`);
+                if (cell) {
+                    cell.classList.add('falling');
                 }
             });
 
@@ -1350,6 +1454,7 @@
             gameMode = mode;
             boardState.score = 0;
             boardState.wordsFound = 0;
+            boardState.foundWordsHistory = [];
             boardState.currentSelection = [];
             boardState.revealedHintCells = [];
             boardState.multiplier = 1;
@@ -1379,7 +1484,7 @@
             if (mode === 'infinity' || mode === 'grow_infinity') {
                 pill.innerText = mode === 'grow_infinity' ? "GROW INFINITY" : "INFINITY";
                 pill.className = "font-bold text-brand-300 uppercase tracking-wider text-[10px]";
-                dynamicTitle.innerText = "WORDS FOUND";
+                dynamicTitle.innerHTML = `WORDS FOUND <i class="fa-regular fa-eye ml-1 text-slate-500 group-hover:text-brand-400 transition-colors"></i>`;
                 dynamicVal.innerText = "0";
                 dynamicIcon.className = "fa-solid fa-spell-check absolute text-xs text-brand-400";
                 progressRing.setAttribute('stroke-dasharray', '100, 100');
@@ -1389,16 +1494,15 @@
             } else {
                 pill.innerText = mode === 'grow_timed' ? "GROW TIMED" : "TIMED CHALLENGE";
                 pill.className = "font-bold text-emerald-400 uppercase tracking-wider text-[10px]";
-                dynamicTitle.innerText = "TIME REMAINING";
+                dynamicTitle.innerHTML = `WORDS FOUND <i class="fa-regular fa-eye ml-1 text-slate-500 group-hover:text-emerald-400 transition-colors"></i>`;
                 timeRemaining = timerDuration;
-                dynamicVal.innerText = `${timeRemaining}s`;
+                dynamicVal.innerText = `0`;
                 dynamicIcon.className = "fa-regular fa-clock absolute text-xs text-emerald-400";
                 progressRing.className.baseVal = "text-emerald-500";
                 
                 clearInterval(timerInterval);
                 timerInterval = setInterval(() => {
                     timeRemaining--;
-                    dynamicVal.innerText = `${timeRemaining}s`;
                     
                     const percentage = (timeRemaining / timerDuration) * 100;
                     progressRing.setAttribute('stroke-dasharray', `${percentage}, 100`);
@@ -1406,9 +1510,6 @@
                     if (timeRemaining <= 10) {
                         progressRing.className.baseVal = "text-rose-500 transition-colors";
                         dynamicIcon.className = "fa-solid fa-hourglass-half absolute text-xs text-rose-500 animate-pulse";
-                        dynamicVal.className = "text-2xl font-black tracking-tight text-rose-500 animate-pulse";
-                    } else {
-                        dynamicVal.className = "text-2xl font-black tracking-tight text-white";
                     }
 
                     if (timeRemaining <= 0) {
