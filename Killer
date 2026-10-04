@@ -562,7 +562,7 @@
         const soundFX = new SoundEffects();
 
         // GAME STATE MANAGEMENT
-        const DEFAULT_NAMES = ["Ryan", "Matt", "Jonny", "Didier", "Tom", "Player 6"];
+        const DEFAULT_NAMES = ["Ryan", "Matt", "Jonny", "Didier", "Tom", "Marc"];
         const AVATAR_COLORS = [
             { bg: 'from-cyan-500 to-blue-600', text: 'text-cyan-400' },
             { bg: 'from-emerald-500 to-teal-600', text: 'text-emerald-400' },
