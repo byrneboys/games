@@ -1,0 +1,197 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#101014">
+<title>The Traitors — Pass the Phone</title>
+<style>
+:root{--bg:#101014;--panel:#1c1b22;--panel2:#26232d;--gold:#e7bd67;--gold2:#ffdf91;--text:#f7f3ec;--muted:#b9b3c2;--red:#f16d75;--green:#8dd6a7;--line:#3b3543}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at top,#29212c 0,#101014 58%);color:var(--text);font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;min-height:100vh}
+main{width:min(720px,100%);margin:0 auto;padding:20px 16px 36px}
+header{text-align:center;padding:14px 0 20px} .eyebrow{color:var(--gold);font-size:.75rem;letter-spacing:.2em;text-transform:uppercase;font-weight:800}
+h1{font-family:Georgia,serif;font-size:clamp(2rem,8vw,3.25rem);line-height:1.05;margin:8px 0;color:var(--gold2)}h2{font-family:Georgia,serif;margin:0 0 10px;font-size:1.55rem}
+p{color:var(--muted);line-height:1.5;margin:8px 0 14px}.panel{background:rgba(28,27,34,.96);border:1px solid var(--line);border-radius:20px;padding:20px;margin:12px 0;box-shadow:0 12px 32px #0003}
+label{display:block;font-weight:700;margin:14px 0 6px}input,select{width:100%;background:#121116;color:var(--text);border:1px solid #504858;border-radius:12px;padding:13px 14px;font:inherit}
+button{border:0;border-radius:13px;padding:14px 16px;font:inherit;font-weight:800;cursor:pointer;transition:transform .08s,opacity .15s}
+button:active{transform:scale(.98)}button:disabled{opacity:.4;cursor:not-allowed}.primary{background:var(--gold);color:#21180b;width:100%}.secondary{background:var(--panel2);border:1px solid #504858;color:var(--text)}.danger{background:#7c3039;color:#fff}.btnrow{display:flex;gap:10px;margin-top:16px}.btnrow>*{flex:1}
+.hidden{display:none!important}.center{text-align:center}.big-icon{font-size:3.2rem;margin:8px}.role{font-family:Georgia,serif;font-size:2.3rem;color:var(--gold2);margin:12px 0}.role.traitor{color:var(--red)}.note{font-size:.9rem;background:#121116;border-radius:12px;padding:12px;color:var(--muted)}
+.player-list{display:grid;gap:8px;margin:14px 0}.player{display:flex;align-items:center;justify-content:space-between;gap:10px;background:#121116;border:1px solid var(--line);border-radius:12px;padding:12px}.player strong{overflow-wrap:anywhere}.lives{letter-spacing:.1em;color:var(--gold2);white-space:nowrap}.out{opacity:.48}.tag{font-size:.75rem;color:var(--muted);border:1px solid var(--line);padding:3px 7px;border-radius:99px}
+.choice-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:12px 0}.choice{width:100%;min-width:0;min-height:54px;text-align:left;display:flex;align-items:center;justify-content:space-between;gap:6px;background:#121116;border:1px solid #504858;color:var(--text);padding:11px 12px;overflow-wrap:anywhere}.choice strong{min-width:0;overflow-wrap:anywhere}.choice span{font-size:.82rem;flex-shrink:0}.choice.selected{border:2px solid var(--gold);background:#30291c}.choice small{color:var(--muted)}.turn-banner{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:4px;background:linear-gradient(135deg,#493719,#2a241b);border:2px solid var(--gold);border-radius:16px;padding:14px 12px;margin:10px 0 14px;box-shadow:0 0 0 3px #e7bd671c}.turn-banner span{font-size:.75rem;font-weight:900;letter-spacing:.16em;color:var(--gold2)}.turn-banner strong{font-size:clamp(1.55rem,6vw,2.1rem);line-height:1.1;overflow-wrap:anywhere;color:#fff}.privacy-screen{text-align:center;padding:16px 4px}.privacy-screen .big-icon{font-size:2.8rem}.privacy-screen .handover-name{display:block;font-size:clamp(1.65rem,7vw,2.35rem);line-height:1.15;color:#fff;margin:8px 0;overflow-wrap:anywhere}
+/* Compact mobile layout keeps most game actions on one screen. */
+@media(max-width:600px){main{padding:6px 10px 10px}header{padding:4px 0 8px}header h1{font-size:clamp(1.8rem,8vw,2.45rem);margin:4px 0}header p{font-size:.85rem} .eyebrow{font-size:.65rem;letter-spacing:.15em}.panel{padding:14px;margin:7px 0;border-radius:16px}h2{font-size:1.3rem;margin-bottom:7px}p{line-height:1.35;margin:6px 0 9px}.role{font-size:1.9rem;margin:6px 0}.big-icon{font-size:2.4rem;margin:3px}.note{font-size:.82rem;padding:9px}.choice-list{gap:7px;margin:10px 0}.choice{min-height:48px;padding:10px;font-size:.94rem}button{padding:12px 13px}.player-list{gap:6px;margin:10px 0}.player{padding:9px}.progress{margin:6px 0 10px}footer{padding:8px 0;font-size:.7rem}label{margin:9px 0 4px}input,select{padding:10px 12px}}.status{display:flex;justify-content:space-between;gap:10px;color:var(--muted);font-size:.9rem;margin-bottom:10px}.progress{height:5px;background:#38313e;border-radius:9px;overflow:hidden;margin:8px 0 16px}.progress span{display:block;height:100%;background:var(--gold);width:0}.alert{border-left:3px solid var(--gold);padding:10px 12px;background:#29231b;border-radius:0 10px 10px 0;color:#f5e5c2;margin:12px 0}.success{color:var(--green)}.error{color:var(--red)}footer{text-align:center;color:#807987;font-size:.78rem;padding:18px 0}
+</style>
+</head>
+<body>
+<main>
+<header><h1>Traitors</h1></header>
+
+<section id="setup" class="panel">
+<h2>Gather your players</h2>
+<p>Choose 3–6 players. Everyone starts with two lives. One player is secretly the Traitor.</p>
+<label for="count">Number of players</label><select id="count"><option>3</option><option selected>4</option><option>5</option><option>6</option></select>
+<div id="nameFields"></div>
+<div class="note" style="margin-top:16px">Pass the phone privately during role reveal and secret actions. This game runs in this browser; keep this page open for the whole game.</div>
+<button id="start" class="primary" style="margin-top:18px">Begin game</button>
+</section>
+
+<section id="screen" class="hidden"></section>
+<footer>Made for a group around one phone · Keep secrets secret</footer>
+</main>
+<script>
+(() => {
+const $ = id => document.getElementById(id);
+const setup = $('setup'), screen = $('screen'), count = $('count');
+let players=[], traitor=null, phase='', cursor=0, votes={}, revotePool=[], revoteRound=false, selected=null, round=0, nightOrder=[], nightCursor=0, pendingAttacks=[], actionDone=false, initialVictim=null, goldenDaggerId=null, shieldId=null, daggerChance=0.10, shieldChance=0.25, pendingRewardNotices='';
+const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const alive = () => players.filter(p=>p.alive);
+const name = id => players.find(p=>p.id===id)?.name || 'Unknown';
+function fields(){
+ const n=+count.value, old=[...document.querySelectorAll('.name-input')].map(x=>x.value);
+ const defaults=['Daddy','George','Mummy','Noah'];
+ $('nameFields').innerHTML=Array.from({length:n},(_,i)=>{const value=old[i]!==undefined?old[i]:(defaults[i]||'');return `<label for="p${i}">Player ${i+1}</label><input class="name-input" id="p${i}" maxlength="24" placeholder="Enter player ${i+1}'s name" value="${esc(value)}">`}).join('');
+}
+count.addEventListener('change',fields); fields();
+function show(html){screen.innerHTML=html;screen.classList.remove('hidden');setup.classList.add('hidden');window.scrollTo(0,0)}
+function button(label,fn,cls='primary',disabled=false){return `<button class="${cls}" ${disabled?'disabled':''} data-action="${fn}">${label}</button>`}
+function shell(kicker,title,body,buttons=''){show(`<div class="panel"><div class="eyebrow">${kicker}</div><h2>${title}</h2>${body}${buttons}</div>`)}
+function begin(){
+ const names=[...document.querySelectorAll('.name-input')].map(x=>x.value.trim());
+ if(names.some(x=>!x)){alert('Please enter a name for every player.');return}
+ if(new Set(names.map(x=>x.toLocaleLowerCase())).size!==names.length){alert('Please use a different name for each player.');return}
+ players=names.map((n,i)=>({id:i,name:n,lives:2,alive:true,role:'Faithful'}));
+ traitor=Math.floor(Math.random()*players.length);players[traitor].role='Traitor';
+ round=0;votes={};revotePool=[];revoteRound=false;cursor=0;initialVictim=null;goldenDaggerId=null;shieldId=null;daggerChance=0.10;shieldChance=0.25;pendingRewardNotices='';roleIntro();
+}
+function turnBanner(playerName){return `<div class="turn-banner"><span>YOUR TURN</span><strong>${esc(playerName)}</strong></div>`}
+function roleIntro(){
+ phase='roleIntro';
+ shell('Secret role reveal','Pass the phone',turnBanner(players[cursor].name)+`<p>Give the phone to this player. Make sure nobody else can see the screen.</p><p>They can tap when they are ready to reveal their role privately.</p>`,button('I am ready — reveal my role','revealRole'));
+}
+function revealRole(){
+ phase='roleShown';const p=players[cursor];
+ const intro=p.role==='Traitor'?'You are the Traitor. Before the first Round Table, secretly choose one other player to lose a life. You will also choose a target during each night phase.':'At the Round Table, vote for who you suspect is the Traitor. During the night phase, select your own name to stay safe.';
+ const body=`<div class="center"><div class="big-icon">${p.role==='Traitor'?'🗡️':'🛡️'}</div><div class="role ${p.role==='Traitor'?'traitor':''}">${p.role.toUpperCase()}</div></div><p>${intro}</p><div class="note">Your role stays secret even if you are eliminated.</div>`;
+ if(p.role==='Traitor'){
+   shell('Only you should look','Choose your first target',body+`<p>Choose another player to lose a life, or choose yourself to sacrifice one of your own lives. Your identity will remain secret.</p><div class="choice-list">${alive().map(t=>`<button class="choice" data-initial-pick="${t.id}"><strong>${esc(t.name)}</strong><span>${t.id===p.id?'I sacrifice 1 life':'Lose a life ›'}</span></button>`).join('')}</div>`,button('Confirm target & pass phone','confirmInitialAttack','primary',true));
+   const btn=screen.querySelector('[data-action="confirmInitialAttack"]');
+   screen.querySelectorAll('[data-initial-pick]').forEach(b=>b.addEventListener('click',()=>{selected=+b.dataset.initialPick;screen.querySelectorAll('[data-initial-pick]').forEach(x=>x.classList.toggle('selected',x===b));btn.disabled=false;}));
+ } else {
+   shell('Only you should look','Confirm your identity',body+`<p>To confirm you are Faithful, select your own name.</p><div class="choice-list"><button class="choice" data-faithful-pick="${p.id}"><strong>${esc(p.name)}</strong><span>This is me ✓</span></button></div>`,button('Confirm & pass phone','confirmFaithfulReveal','primary',true));
+   const btn=screen.querySelector('[data-action="confirmFaithfulReveal"]');
+   screen.querySelectorAll('[data-faithful-pick]').forEach(b=>b.addEventListener('click',()=>{selected=+b.dataset.faithfulPick;screen.querySelectorAll('[data-faithful-pick]').forEach(x=>x.classList.toggle('selected',x===b));btn.disabled=false;}));
+ }
+}
+function confirmFaithfulReveal(){if(selected!==players[cursor].id)return;selected=null;nextRole()}
+function confirmInitialAttack(){if(selected===null)return;initialVictim=selected;loseLife(players[initialVictim],'the Traitor’s opening attack');pendingRewardNotices=rollBonuses();selected=null;nextRole()}
+function nextRole(){cursor++;if(cursor<players.length)roleIntro();else startRoundTable()}
+function startRoundTable(){
+ round++;votes={};revotePool=[];revoteRound=false;cursor=0;phase='tableIntro';
+ const opening=initialVictim===null?'':`<div class="alert"><strong>${esc(name(initialVictim))}</strong> has lost a life in a secret opening attack. The attacker remains unknown.</div>`;
+ // The opening attack is announced only at the first Round Table.
+ initialVictim=null;pendingRewardNotices='';
+ shell(`Round ${round}`,'The Round Table',opening+pendingRewardNotices+`<p>Discuss openly. Then pass the phone around so every living player can secretly vote for who they suspect is the Traitor.</p><div class="player-list">${players.map(p=>playerRow(p)).join('')}</div>`,button('Start voting','startVoting'))
+}
+function playerRow(p){return `<div class="player ${p.alive?'':'out'}"><strong>${esc(p.name)} ${p.alive?'':'<span class="tag">ELIMINATED</span>'}</strong><span class="lives">${shieldId===p.id&&p.alive?'🛡️ ':''}${'♥ '.repeat(p.lives)}${'♡ '.repeat(2-p.lives)}</span></div>`}
+function startVoting(){phase='vote';cursor=0;votes={};revotePool=[];revoteRound=false;voteTurn()}
+function eligibleVoters(){return alive()}
+function voteTurn(){
+ const voters=eligibleVoters();if(cursor>=voters.length){resolveVotes();return}
+ const voter=voters[cursor], targets=alive().filter(p=>p.id!==voter.id);
+ selected=null;
+ shell(revoteRound?'Revote · tied players only':`Round ${round} · Round Table`,'Cast your secret vote',turnBanner(voter.name)+`<p>${revoteRound?'Only the tied players are eligible to receive votes.':'Choose the person you suspect is the Traitor.'} Your vote is secret.</p><div class="choice-list">${targets.filter(p=>!revoteRound||revotePool.includes(p.id)).map(p=>`<button class="choice" data-pick="${p.id}"><strong>${esc(p.name)}</strong><span>Choose ›</span></button>`).join('')}</div><div id="pickHint" class="note">Select a player, then confirm your vote.</div>`,button('Confirm vote','confirmVote','primary',true));
+ const btn=screen.querySelector('[data-action="confirmVote"]');
+ screen.querySelectorAll('[data-pick]').forEach(b=>b.addEventListener('click',()=>{selected=+b.dataset.pick;screen.querySelectorAll('[data-pick]').forEach(x=>x.classList.toggle('selected',x===b));btn.disabled=false;}));
+}
+function confirmVote(){if(selected===null)return;const voter=eligibleVoters()[cursor];votes[voter.id]=selected;cursor++;voteTurn()}
+function resolveVotes(){
+ const tally={};Object.entries(votes).forEach(([voterId,targetId])=>{const weight=Number(voterId)===goldenDaggerId?2:1;tally[targetId]=(tally[targetId]||0)+weight;});
+ const max=Math.max(...Object.values(tally));const leaders=Object.keys(tally).filter(id=>tally[id]===max).map(Number);
+ goldenDaggerId=null;
+ if(leaders.length>1){showDrawDecision(leaders);return;}
+ const eliminated=players[leaders[0]];eliminatePlayer(eliminated,'the Round Table vote');
+ const body=`<div class="alert"><strong>${esc(eliminated.name)}</strong> has been voted out and is eliminated, losing all remaining lives.</div><div class="player-list">${players.map(p=>playerRow(p)).join('')}</div>`;
+ shell('Round Table result','The votes are in',body,button('Continue','afterVote'));
+}
+function showDrawDecision(tiedIds){
+ selected=null;phase='drawDecision';
+ shell('Round Table · Draw','Agree who is eliminated',`<p>The vote is tied. There will be no revote. Discuss openly and agree which of these tied players should be eliminated.</p><p><strong>Only the tied players are listed below.</strong></p><div class="choice-list">${tiedIds.filter(id=>players[id].alive).map(id=>`<button class="choice" data-draw-pick="${id}"><strong>${esc(players[id].name)}</strong><span>Eliminate player</span></button>`).join('')}</div><div id="drawHint" class="note">Discuss together, then select the agreed player.</div>`,button('Confirm group decision','confirmDrawChoice','primary',true));
+ const btn=screen.querySelector('[data-action="confirmDrawChoice"]');
+ screen.querySelectorAll('[data-draw-pick]').forEach(b=>b.addEventListener('click',()=>{selected=+b.dataset.drawPick;screen.querySelectorAll('[data-draw-pick]').forEach(x=>x.classList.toggle('selected',x===b));btn.disabled=false;}));
+}
+function confirmDrawChoice(){
+ if(selected===null||!players[selected]||!players[selected].alive)return;
+ const p=players[selected];eliminatePlayer(p,'the Round Table draw agreement');goldenDaggerId=null;
+ const body=`<div class="alert"><strong>${esc(p.name)}</strong> has been eliminated by group agreement after the tied vote, losing all remaining lives.</div><div class="player-list">${players.map(p=>playerRow(p)).join('')}</div>`;
+ selected=null;shell('Round Table result','The group has agreed',body,button('Continue to night','afterVote'));
+}
+function startRevote(){phase='vote';cursor=0;votes={};voteTurn()}
+function loseLife(p,reason){if(!p.alive)return;p.lives=Math.max(0,p.lives-1);if(p.lives===0)p.alive=false;p.lastReason=reason}
+function eliminatePlayer(p,reason){if(!p.alive)return;p.lives=0;p.alive=false;p.lastReason=reason}
+function afterVote(){if(checkEnd())return;startNight()}
+function startNight(){
+ phase='nightIntro';nightCursor=0;pendingAttacks=[];nightOrder=alive().map(p=>p.id);
+ shell(`Round ${round} · Night phase`,'The night is falling',`<p>The phone passes to every living player. Faithful players select their own name to stay safe. The Traitor can choose another living player to lose a life — or sacrifice themselves and lose one of their own lives.</p><p><strong>Attacks are secret:</strong> the game will reveal who lost a life, but not who attacked them.</p>`,button('Begin secret actions','nightTurn'));
+}
+function nightTurn(){
+ while(nightCursor<nightOrder.length&&!players[nightOrder[nightCursor]].alive)nightCursor++;
+ if(nightCursor>=nightOrder.length){resolveNight();return}
+ const p=players[nightOrder[nightCursor]];selected=null;phase='nightAction';
+ const opts=alive().filter(t=>!(p.role==='Traitor'&&t.id===p.id&&p.lives<=1));
+ shell('Secret night action','Make your choice privately',turnBanner(p.name)+`<p>${p.role==='Traitor'?(p.lives<=1?'You are the Traitor with one life left. You cannot sacrifice yourself tonight; choose another living player to murder.':'You are the Traitor. Choose another living player to murder, or choose yourself to lose one of your own lives.'):'You are Faithful. Select your own name to stay safe.'} Nobody else should see your choice.</p><div class="choice-list">${opts.map(t=>`<button class="choice" data-night-pick="${t.id}"><strong>${esc(t.name)}</strong><span>${t.id===p.id?(p.role==='Traitor'?'Lose 1 life':'Stay safe'):(p.role==='Traitor'?'Murder ›':'Choose ›')}</span></button>`).join('')}</div>`,button('Confirm secret choice','confirmNight','primary',true));
+ const btn=screen.querySelector('[data-action="confirmNight"]');
+ screen.querySelectorAll('[data-night-pick]').forEach(b=>b.addEventListener('click',()=>{selected=+b.dataset.nightPick;screen.querySelectorAll('[data-night-pick]').forEach(x=>x.classList.toggle('selected',x===b));btn.disabled=false;}));
+}
+function confirmNight(){
+ if(selected===null)return;const p=players[nightOrder[nightCursor]];
+ if(p.role==='Traitor')pendingAttacks.push(selected===p.id?p.id:selected);
+ nightCursor++;
+ while(nightCursor<nightOrder.length&&!players[nightOrder[nightCursor]].alive)nightCursor++;
+ const nextPlayer=nightCursor<nightOrder.length?players[nightOrder[nightCursor]]:null;
+ const handover=nextPlayer?`<p>Pass the phone to:</p><strong class="handover-name">${esc(nextPlayer.name)}</strong><p>Make sure they cannot see your choice before they tap the button below.</p>`:`<p><strong>All night turns are complete.</strong></p><p>Pass the phone to the group to reveal the morning results.</p>`;
+ shell('Choice recorded',nextPlayer?'Pass the phone to the next player':'Night actions complete',`<div class="privacy-screen"><div class="big-icon">🔒</div><p>Your choice has been recorded privately.</p>${handover}</div>`,button(nextPlayer?'Ready for next player':'Reveal morning results','nightTurn'));
+}
+function rollBonuses(){
+ let notices='', awarded=false;
+ const candidates=alive();
+ if(candidates.length&&Math.random()<daggerChance){const recipient=candidates[Math.floor(Math.random()*candidates.length)];goldenDaggerId=recipient.id;awarded=true;notices+=`<div class="alert"><strong>🗡️ Golden dagger!</strong> ${esc(recipient.name)} has found a golden dagger. Their vote will count twice at the next Round Table.</div>`}
+ if(candidates.length&&Math.random()<shieldChance){const recipient=candidates[Math.floor(Math.random()*candidates.length)];shieldId=recipient.id;awarded=true;notices+=`<div class="alert"><strong>🛡️ Shield found!</strong> ${esc(recipient.name)} has a shield. It will protect them from a murder during the next night, but they can still be voted out at the Round Table.</div>`}
+ if(awarded){daggerChance=0.10;shieldChance=0.25;}
+ else {daggerChance=Math.min(1,daggerChance+0.10);shieldChance=Math.min(1,shieldChance+0.10);}
+ return notices;
+}
+function resolveNight(){
+ // One Traitor means at most one attack; a shield from the previous morning blocks this attack.
+ const targetId=pendingAttacks[0];
+ const protectedId=shieldId;
+ shieldId=null; // A shield lasts for one night only.
+ let body='', successfulMurder=false;
+ if(targetId!==undefined&&players[targetId].alive){
+   const target=players[targetId];
+   if(targetId===protectedId){body=`<div class="alert"><strong>${esc(target.name)}</strong> was targeted during the night, but their shield protected them. They lose no life.</div>`}
+   else {loseLife(target,'a secret night attack');successfulMurder=true;body=`<div class="alert"><strong>${esc(target.name)}</strong> loses a life during the night.${target.lives===0?' They are eliminated!':''}</div>`}
+ } else body='<div class="alert">Nobody was murdered during the night.</div>';
+ if(successfulMurder) body+=rollBonuses();
+ body+=`<div class="player-list">${players.map(p=>playerRow(p)).join('')}</div>`;
+ shell(`Round ${round} · Morning`,'The night is over',body,button('Continue','afterNight'));
+}
+function afterNight(){if(checkEnd())return;startRoundTable()}
+function checkEnd(){
+ const living=alive();
+ if(living.length<=2){
+   const traitorAlive=living.some(p=>p.role==='Traitor');
+   phase='end';
+   const winner=traitorAlive?'THE TRAITOR WINS':'THE FAITHFUL WIN';
+   const desc=traitorAlive?'A Traitor is still among the final two players.':'No Traitor remains among the final two players.';
+   shell('Game over',winner,`<div class="center"><div class="big-icon">${traitorAlive?'🗡️':'🛡️'}</div><p>${desc}</p></div><h3>Final roles</h3><div class="player-list">${players.map(p=>`<div class="player ${p.alive?'':'out'}"><strong>${esc(p.name)} ${p.alive?'':'(eliminated)'}</strong><span class="tag">${p.role}</span></div>`).join('')}</div>`,button('Play again','restart'));
+   return true;
+ }
+ return false;
+}
+function restart(){screen.classList.add('hidden');setup.classList.remove('hidden');players=[];phase='';fields();window.scrollTo(0,0)}
+document.addEventListener('click',e=>{const b=e.target.closest('[data-action]');if(!b||b.disabled)return;const fn=b.dataset.action;const map={revealRole,nextRole,confirmFaithfulReveal,confirmInitialAttack,startVoting,confirmVote,startRevote,confirmDrawChoice,afterVote,nightTurn,confirmNight,afterNight,restart};if(map[fn])map[fn]()});
+$('start').addEventListener('click',begin);
+})();
+</script>
+</body>
+</html>
